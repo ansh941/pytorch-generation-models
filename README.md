@@ -1,5 +1,7 @@
 # Pytorch Generation Models
-
+Generation models using Pytorch.
+I'm going to add new generation models every day.
+Starting with the basic models!
 
 ## VAE
 
