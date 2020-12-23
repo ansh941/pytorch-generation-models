@@ -9,7 +9,7 @@ import argparse
 import numpy as np
 import cv2
 
-def run(p_seed=0, p_epochs=150, p_kernel_size=5, p_logdir="temp"):
+def run(p_seed=0, p_logdir="temp"):
     # random number generator seed ------------------------------------------------#
     SEED = p_seed
     torch.backends.cudnn.deterministic = True
@@ -49,7 +49,6 @@ def run(p_seed=0, p_epochs=150, p_kernel_size=5, p_logdir="temp"):
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--seed", default=0, type=int)
-    p.add_argument("--epochs", default=150, type=int)
     p.add_argument("--gpu", default=0, type=int)
     p.add_argument("--logdir", default="temp")
     args = p.parse_args()

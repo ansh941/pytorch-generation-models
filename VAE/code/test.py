@@ -9,7 +9,7 @@ import argparse
 import numpy as np
 import cv2
 
-def run(p_seed=0, p_epochs=150, p_kernel_size=5, p_logdir="temp"):
+def run(p_seed=0, p_kernel_size=5, p_logdir="temp"):
     # random number generator seed ------------------------------------------------#
     SEED = p_seed
     torch.backends.cudnn.deterministic = True
@@ -48,7 +48,6 @@ def run(p_seed=0, p_epochs=150, p_kernel_size=5, p_logdir="temp"):
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--seed", default=0, type=int)
-    p.add_argument("--epochs", default=150, type=int)
     p.add_argument("--gpu", default=0, type=int)
     p.add_argument("--logdir", default="vae")
     args = p.parse_args()
@@ -56,6 +55,5 @@ if __name__ == "__main__":
     os.environ["CUDA_VISIBLE_DEVICES"]=str(args.gpu)
 
     run(p_seed = args.seed,
-        p_epochs = args.epochs,
         p_logdir = args.logdir)
 
