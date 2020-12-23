@@ -6,11 +6,16 @@ Starting with the basic models!
 
 # Environments
 
-Pytorch : 1.6.0
-Torchvision : 0.7.0
-torchsummary : 1.5.1
-numpy : 1.19.1
+Pytorch : 1.6.0<br>
+Torchvision : 0.7.0<br>
+torchsummary : 1.5.1<br>
+numpy : 1.19.1<br>
 
+# Training and Test
+```
+python train.py --logdir='temp' --gpu=0 --seed=0 --epochs=30
+python test.py --logdir='temp' --gpu=0 --seed=0
+```
 ## Next tasks
 
 1. Should add convolution layers in CVAE.<br>
