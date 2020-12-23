@@ -1,6 +1,6 @@
 import torch
 import torchvision
-from models.VAE import VAE
+from models.GAN import Generator, Discriminator
 from torchsummary import summary
 
 import os
@@ -32,16 +32,16 @@ def run(p_seed=0, p_kernel_size=5, p_logdir="temp"):
 
     n_gaussians = 100
 
-    vae = VAE(n_gaussians).to(device)
+    gen = Generator().to(device)
 
-    vae.load_state_dict(torch.load(MODEL_FILE))
-    vae.eval()
+    gen.load_state_dict(torch.load(MODEL_FILE))
+    gen.eval()
 
     sample = torch.randn((bs, n_gaussians)).float().cuda()
-    recon_x = vae.decoder(sample)
+    gen_x = gen(sample)
 
-    result = recon_x.clone().detach().cpu().numpy()
-    result = np.transpose(result, [0,2,3,1])*255
+    result = gen_x.clone().detach().cpu().numpy()
+    result = np.reshape(result, (-1,28,28,1))*255
     for i in range(len(result)):
         cv2.imwrite('img/%d.png'%i, result[i])
 
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--seed", default=0, type=int)
     p.add_argument("--gpu", default=0, type=int)
-    p.add_argument("--logdir", default="vae")
+    p.add_argument("--logdir", default="gan")
     args = p.parse_args()
     os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"]=str(args.gpu)

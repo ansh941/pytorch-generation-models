@@ -48,8 +48,8 @@ def run(p_seed=0, p_epochs=150, p_logdir="temp"):
     dis = Discriminator().to(device)
     gen = Generator().to(device)
 
-    summary(dis, (1,28*28))
-    summary(gen, (1,100))
+    #summary(dis, (1,28*28))
+    #summary(gen, (1,100))
 
     dis_optimizer = torch.optim.Adam(dis.parameters(), lr=1e-4)
     gen_optimizer = torch.optim.Adam(gen.parameters(), lr=1e-4)
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     p.add_argument("--seed", default=0, type=int)
     p.add_argument("--epochs", default=30, type=int)    
     p.add_argument("--gpu", default=0, type=int)
-    p.add_argument("--logdir", default="gen")
+    p.add_argument("--logdir", default="gan")
     args = p.parse_args()
     os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"]=str(args.gpu)
