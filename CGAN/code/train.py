@@ -1,30 +1,26 @@
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
 
 import torchvision
 from torchvision import datasets
 from torchvision import transforms
 
-from models.CVAE_dense import CVAE
-#from models.CVAE_conv import CVAE
+from models.CGAN_conv import Generator, Discriminator
 import numpy as np
 import cv2
 from torchsummary import summary
 import argparse
 import os
 
-def loss_fn(recon_x, x, mu, logvar):
-    BCE = F.binary_cross_entropy(recon_x, x, reduction='sum')
-    KLD = -0.5 * torch.sum(1 + logvar - mu**2 -  logvar.exp())
-
-    return BCE, KLD
-
 def one_hot(y, dim):
     tmp = torch.zeros(y.size(0), dim)
-    for i in range(y.size(0)):
+
+    for i in range(y.size(0)):    
         tmp[i][y[i]] = 1
 
     return tmp
+
 
 def run(p_seed=0, p_epochs=150, p_logdir="temp"):
     # random number generator seed ------------------------------------------------#
@@ -54,45 +50,65 @@ def run(p_seed=0, p_epochs=150, p_logdir="temp"):
     epochs = p_epochs
 
     # Load Data
-    dataset = datasets.MNIST(root='../data', train=True, transform=transforms.ToTensor(), download=True)
+    dataset = datasets.MNIST(root='../data/mnist', train=True, transform=transforms.ToTensor(), download=True)
+    #dataset = datasets.CIFAR10(root='../data/cifar10', train=True, transform=transforms.ToTensor(), download=True)
     data_loader = torch.utils.data.DataLoader(dataset, batch_size=bs, shuffle=True)
 
-    n_gaussians = 100
-    vae = CVAE(n_gaussians).to(device)
+    dis = Discriminator().to(device)
+    gen = Generator().to(device)
 
-    #summary(vae, (1,28,28))
-    optimizer = torch.optim.Adam(vae.parameters(), lr=1e-3)
+    dis_optimizer = torch.optim.Adam(dis.parameters(), lr=1e-4)
+    gen_optimizer = torch.optim.Adam(gen.parameters(), lr=1e-4)
+    loss = nn.CrossEntropyLoss()
 
     for epoch in range(epochs):
         for idx, (data, target) in enumerate(data_loader):
-            data, target = data.to(device).view(-1, 28*28), target.to(device)
-            #data, target = data.to(device), one_hot(target, 10).to(device)
-            recon_images, mu, logvar = vae(data, target)
-            bce, kld = loss_fn(recon_images, data, mu, logvar)
-            loss = bce + kld
-            loss = loss / data.size(0)
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-    
+            dis_optimizer.zero_grad()
+            gen_optimizer.zero_grad()
+            data = data.to(device)
+            target = one_hot(target, 10).to(device)
+
+            fake_label = torch.zeros(data.size(0)).to(device).long()
+            real_label = torch.ones(data.size(0)).to(device).long()
+
+            z = torch.randn((data.size(0), 100)).to(device)
+            gen_images = gen(z, target)
+
+            g_loss = loss(dis(gen_images, target), real_label)
+            g_loss.backward()
+
+            gen_optimizer.step()
+
+            dis_real = dis(data, target)
+            dis_fake = dis(gen_images.detach(), target)
+
+            d_real_loss = loss(dis_real, real_label)
+            d_fake_loss = loss(dis_fake, fake_label)
+
+            d_loss = (d_real_loss + d_fake_loss)/2
+
+            d_loss.backward()
+
+            dis_optimizer.step()
+
             if idx%100 == 0:
-                print("Epoch[{}/{}] Loss: {:.3f} {:.3f}".format(epoch+1, epochs, bce.item()/data.size(0), kld.item()/data.size(0)))
+                print("Epoch[{}/{}] Loss: {:.3f} {:.3f}".format(epoch+1, epochs, d_loss, g_loss))
 
         # Save results -------------------------------------------------------------#
-        result = recon_images.clone().detach().cpu().numpy()
-        result = np.reshape(result, (-1, 28,28,1))*255
+        result = gen_images.clone().detach().cpu().numpy()
+        result = np.reshape(result, (-1,28,28,1))*255
         for i in range(len(result)):
             cv2.imwrite('img/%d.png'%i, result[i])
         
         # Save Model parameter -----------------------------------------------------#
-        torch.save(vae.state_dict(), MODEL_FILE)
+        torch.save(gen.state_dict(), MODEL_FILE)
     
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--seed", default=0, type=int)
     p.add_argument("--epochs", default=30, type=int)    
     p.add_argument("--gpu", default=0, type=int)
-    p.add_argument("--logdir", default="cvae")
+    p.add_argument("--logdir", default="cgan")
     args = p.parse_args()
     os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"]=str(args.gpu)

@@ -1,6 +1,6 @@
 import torch
 import torchvision
-from models.CVAE_dense import CVAE
+from models.CGAN_conv import Generator, Discriminator
 from torchsummary import summary
 
 import os
@@ -11,13 +11,12 @@ import cv2
 
 def one_hot(y, dim):
     tmp = torch.zeros(y.size(0), dim)
-
-    for i in range(y.size(0)):
+    for i in range(y.size(0)):    
         tmp[i][y[i]] = 1
 
     return tmp
 
-def run(p_seed=0, p_logdir="temp"):
+def run(p_seed=0, p_kernel_size=5, p_logdir="temp"):
     # random number generator seed ------------------------------------------------#
     SEED = p_seed
     torch.backends.cudnn.deterministic = True
@@ -40,19 +39,19 @@ def run(p_seed=0, p_logdir="temp"):
 
     n_gaussians = 100
 
-    vae = CVAE(n_gaussians)
+    gen = Generator().to(device)
 
-    vae.load_state_dict(torch.load(MODEL_FILE))
-    vae.eval()
+    gen.load_state_dict(torch.load(MODEL_FILE))
+    gen.eval()
 
     sample = torch.randn((bs, n_gaussians)).float().to(device)
-    #target = one_hot(torch.tensor(np.array(range(0,10))), 10).to(device)
-    target = torch.tensor(np.array(range(0,10))).view(-1,1).float().to(device)
-    recon_x = vae.decoder(sample, target)
+    y = torch.full((sample.size(0),), 3.0).long()
+    y = one_hot(y, 10).to(device)
+    gen_x = gen(sample, y)
 
-    result = recon_x.clone().detach().cpu().numpy()
-    result = np.reshape(result, (-1,28,28,1))*255
+    result = gen_x.clone().detach().cpu().numpy()
     #result = np.transpose(result, (0,2,3,1))*255
+    result = np.reshape(result, (-1,28,28,1))*255
     for i in range(len(result)):
         cv2.imwrite('img/%d.png'%i, result[i])
 
@@ -60,7 +59,7 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--seed", default=0, type=int)
     p.add_argument("--gpu", default=0, type=int)
-    p.add_argument("--logdir", default="cvae")
+    p.add_argument("--logdir", default="cgan")
     args = p.parse_args()
     os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"]=str(args.gpu)
