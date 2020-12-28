@@ -1,14 +1,14 @@
-## GAN(Generative Adversarial Network)
+## CGAN(Conditional Generative Adversarial Network)
 
 ### English
-GAN is a Generative model that composed of Generator and Discriminator.<br>
-In GAN, Generator and Discriminator compete each other.<br>
-Generator deceive Discriminator that fake data be decided real data at Discriminator.<br>
-And Discriminator separate betwenn real data and fake data.<br>
+CGAN has the same structure with Vanilla GAN and operation method is the same also.<br>
+CVAE gets the effect like supervised training by giving additional information such as class label in VAE.<br>
+CGAN works the same but use GAN.<br>
+We can generate the class data what we want by giving the label to model.<br>
 (Model structure)<br>
 
 ### Korean
-GAN은 Generator와 Discriminator로 구성된 생성 모델이다.<br>
-GAN에서 Generator와 Discriminator는 서로 경쟁하는 모델인데,<br>
-Generator는 가짜 데이터를 만들어 Discriminator가 원본 데이터라 판단하도록 속이려하고,<br>
-Discriminator는 원본 데이터와 가짜 데이터를 구분하려고 한다.<br>
+CGAN은 기본적인 GAN과 같은 구조를 가지고 있으며, 동작 방식 역시 동일하게 Generator와 Discriminator의 경쟁으로 학습되는 모델이다.<br>
+CVAE가 VAE에 class label 정보를 추가로 주고 지도 학습과 같은 효과를 나타나게 했는데,<br>
+마찬가지로 CGAN은 GAN에 class label 정보를 추가로 주고 지도 학습 효과를 내는 모델이다.<br>
+모델에 Label을 줌으로써 원하는 클래스의 데이터를 생성할 수 있게 되었다.<br>
