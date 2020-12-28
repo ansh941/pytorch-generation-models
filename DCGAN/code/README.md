@@ -1,14 +1,17 @@
-## GAN(Generative Adversarial Network)
+## DCGAN(Deep Convolutional Generative Adversarial Network)
 
 ### English
-GAN is a Generative model that composed of Generator and Discriminator.<br>
-In GAN, Generator and Discriminator compete each other.<br>
-Generator deceive Discriminator that fake data be decided real data at Discriminator.<br>
-And Discriminator separate betwenn real data and fake data.<br>
-(Model structure)<br>
+DCGAN is the development model of Vanilla GAN, add Convolutional layers in traditional GAN architecture.<br>
+DCGAN can be learned stably by adding a convolutional layer. Except for this, the almost parts are the same as GAN.<br>
+In Paper, they showed enter created continuous noise using interpolation to model,<br>
+the output change continuously.<br>
+This phenomenon is called "Walking in the latent space".
+<br>
 
 ### Korean
-GAN은 Generator와 Discriminator로 구성된 생성 모델이다.<br>
-GAN에서 Generator와 Discriminator는 서로 경쟁하는 모델인데,<br>
-Generator는 가짜 데이터를 만들어 Discriminator가 원본 데이터라 판단하도록 속이려하고,<br>
-Discriminator는 원본 데이터와 가짜 데이터를 구분하려고 한다.<br>
+
+DCGAN은 기본적인 GAN의 발전 모델로, 기존의 GAN 구조에 Convolution layer를 사용한 것이다.<br>
+Convolutional layer를 넣어 보다 안정적으로 학습할 수 있도록 하였고 사용 과정 등 모든 부분이 GAN과 동일하다.
+논문에서는 보간법(interpolation)을 이용해서 noise를 연속적으로 생성해서 입력으로 넣으면,
+출력도 연속적으로 변하는 모습을 보인다는 것을 보였다.
+논문에서는 이런 현상을 Walking in the latent space라 부른다.

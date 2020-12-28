@@ -1,6 +1,6 @@
 # Pytorch Generation Models
 Generation models using Pytorch.<br>
-I'm going to add new generation models every day.<br>
+I'm going to add new generation models every weekday.<br>
 Starting with the basic models!
 <br>
 
@@ -23,6 +23,10 @@ Current CVAE based on DNN.<br>
 So, I should change CVAE to convolutional CVAE.<br>
 
 2. Need New generation models.<br>
-First, add DCGAN<br>
+  1. CGAN<br>
+  2. AAE<br>
+  3. WGAN<br>
 
 3. Korean to English<br>
+
+4. New dataset
