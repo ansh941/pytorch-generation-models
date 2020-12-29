@@ -1,17 +1,14 @@
-## DCGAN(Deep Convolutional Generative Adversarial Network)
+## AAE(Adversarial AutoEncoder)
+Incompleted code and explanation..
 
 ### English
-DCGAN is the development model of Vanilla GAN, add Convolutional layers in traditional GAN architecture.<br>
-DCGAN can be learned stably by adding a convolutional layer. Except for this, the almost parts are the same as GAN.<br>
-In Paper, they showed enter created continuous noise using interpolation to model,<br>
-the output change continuously.<br>
-This phenomenon is called "Walking in the latent space".
+
 <br>
 
 ### Korean
-
-DCGAN은 기본적인 GAN의 발전 모델로, 기존의 GAN 구조에 Convolution layer를 사용한 것이다.<br>
-Convolutional layer를 넣어 보다 안정적으로 학습할 수 있도록 하였고 사용 과정 등 모든 부분이 GAN과 동일하다.
-논문에서는 보간법(interpolation)을 이용해서 noise를 연속적으로 생성해서 입력으로 넣으면,
-출력도 연속적으로 변하는 모습을 보인다는 것을 보였다.
-논문에서는 이런 현상을 Walking in the latent space라 부른다.
+AAE는 AutoEncoder에 GAN의 컨셉을 접목시킨 모델이다.<br>
+기존에 AutoEncoder는 Encoder, Decoder로 이루어져 있는 반면, AAE에는 GAN에서 볼 수 있었던 Discriminator가 붙어있다.<br>
+이는 기존 VAE의 단점을 해결하기 위함으로 VAE와 같은 명시적 생성 모델은 학습할 때 데이터의 분포를 가정하고 시작한다.<br>
+하지만 학습되는 데이터가 가정한 분포에 맞지 않는 경우 VAE가 데이터를 제대로 학습하지 못할 가능성이 있다.<br>
+따라서 GAN과 같은 암시적 생성 모델의 특성을 이용하여 AE에 접목해 학습 데이터를 가정하지 않고 데이터의 특성을 학습한다.<br>
+이 과정에서 AAE의 Discriminator가 실제 데이터의 분포와 Decoder에서 생성되는 데이터의 분포의 차이를 줄여주는 역할을 한다.<br>
