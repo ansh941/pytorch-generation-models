@@ -1,8 +1,15 @@
 ## AAE(Adversarial AutoEncoder)
-Incompleted code and explanation..
+Incompleted code...
 
 ### English
-
+AAE is the model that graft GAN onto AutoEncoder.
+Traditional AutoEncoder is composed of a Encoder and a Decoder, but AAE has a Discriminator seen in GAN.<br>
+This characteristic is the intention for solving the weakness of traditional VAE.<br>
+Explict generative model like VAE assume the distribution when the model training.<br>
+However, there is a possibility that VAE will not be able to learn properly if the distribution doesn't fit with data.<br>
+So, AAE train features of data without prior distribution using the characteristic of implict generative model such as GAN.
+In this process, Discriminator in AAE decrease the difference of distribution between real data and reconstruction data created by Decoder.<br>
+<Model Structure>
 <br>
 
 ### Korean
