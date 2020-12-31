@@ -29,3 +29,7 @@ So, I should change CVAE to convolutional CVAE.<br>
 3. Korean to English<br>
 
 4. New dataset
+
+# Reference
+### Papers for each model
+### [Hwalsuklee/tensorflow-generative-model-collections](https://github.com/hwalsuklee/tensorflow-generative-model-collections)
