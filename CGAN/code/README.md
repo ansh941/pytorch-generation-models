@@ -5,7 +5,7 @@ CGAN has the same structure with Vanilla GAN and operation method is the same al
 CVAE gets the effect like supervised training by giving additional information such as class label in VAE.<br>
 CGAN works the same but use GAN.<br>
 We can generate the class data what we want by giving the label to model.<br>
-(Model structure)<br>
+![CGAN_model_structure.png](README_images/CGAN_model_structure.png)<br>
 
 ### Korean
 CGAN은 기본적인 GAN과 같은 구조를 가지고 있으며, 동작 방식 역시 동일하게 Generator와 Discriminator의 경쟁으로 학습되는 모델이다.<br>
