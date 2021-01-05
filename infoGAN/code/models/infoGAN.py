@@ -2,6 +2,18 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+class Q(nn.Module):
+    def __init(self):
+        self.gen = Generator()
+        self.dis = Discriminator()
+        self.cls = Classifier()
+        
+    def forward(self,x):
+        gen_images = self.gen(x)
+        _, fe = self.dis(gen_images)
+        cls = self.cls(fe)
+        return cls
+
 class Generator(nn.Module):
     def __init__(self):
         super(Generator, self).__init__()
@@ -55,18 +67,28 @@ class Discriminator(nn.Module):
         conv3 = self.lrelu(self.conv3_bn(self.conv3(conv2)))
         conv3 = conv3.view(-1, 96*16*16)
 
-        dis1 = self.lrelu(self.dis1(conv3))
-        cls1 = self.lrelu(self.cls1(conv3))
+        dis1 = self.dis1(conv3)
 
-        return dis1, cls1
+        return dis1, conv3
     
-    def conv_cond_concat(self, x, y):
-        y = y.view(-1, 10, 1, 1)
-        new_y = y*torch.ones((x.size(0), y.size(1), x.size(2), x.size(3))).cuda()
-        return torch.cat((x, new_y), dim=1)
+    def forward(self, x):
+        logits, fe = self.get_logits(x)
+
+        return logits, fe
+
+class Classifier(nn.Module):
+    def __init__(self):
+        super(Classifier, self).__init__()
+        self.cls1 = nn.Linear(16*16*96, 10)
+        self.cls1_bn = nn.BatchNorm1d(10)
+
+    def get_logits(self, x):
+        cls1 = self.cls1(conv3)
+
+        return cls1
     
     def forward(self, x, y):
-        x = self.conv_cond_concat(x, y)
-        dis_logits, cls_logits= self.get_logits(x)
+        logits= self.get_logits(x)
 
-        return dis_logits, cls_logits
+        return cls_logits
+
