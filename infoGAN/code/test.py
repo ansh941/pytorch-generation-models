@@ -45,7 +45,7 @@ def run(p_seed=0, p_kernel_size=5, p_logdir="temp"):
     gen.eval()
 
     sample = torch.randn((bs, n_gaussians)).float().to(device)
-    y = torch.full((sample.size(0),), 3.0).long()
+    y = torch.full((sample.size(0),), 1.0).long()
     y = one_hot(y, 10).to(device)
     gen_x = gen(sample, y)
 

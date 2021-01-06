@@ -56,27 +56,11 @@ class Discriminator(nn.Module):
         conv3 = conv3.view(-1, 96*16*16)
 
         dis1 = self.dis1(conv3)
+        cls1 = self.cls1(conv3)
 
-        return dis1, conv3
+        return dis1, cls1
     
     def forward(self, x):
-        logits, fe = self.get_logits(x)
+        dis_logits, cls_logits = self.get_logits(x)
 
-        return logits, fe
-
-class Classifier(nn.Module):
-    def __init__(self):
-        super(Classifier, self).__init__()
-        self.cls1 = nn.Linear(16*16*96, 10)
-        self.cls1_bn = nn.BatchNorm1d(10)
-
-    def get_logits(self, x):
-        cls1 = self.cls1(x)
-
-        return cls1
-    
-    def forward(self, x):
-        logits= self.get_logits(x)
-
-        return logits
-
+        return dis_logits, cls_logits

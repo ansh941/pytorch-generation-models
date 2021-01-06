@@ -1,12 +1,13 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.autograd import Variable
 
 import torchvision
 from torchvision import datasets
 from torchvision import transforms
 
-from models.infoGAN import Generator, Discriminator, Classifier
+from models.infoGAN import Generator, Discriminator
 import numpy as np
 import cv2
 from torchsummary import summary
@@ -56,54 +57,50 @@ def run(p_seed=0, p_epochs=150, p_logdir="temp"):
 
     dis = Discriminator().to(device)
     gen = Generator().to(device)
-    cls = Classifier().to(device)
     
-    params = list(dis.parameters()) + list(gen.parameters()) + list(cls.parameters())
+    params = list(dis.parameters()) + list(gen.parameters())
 
     dis_optimizer = torch.optim.Adam(dis.parameters(), lr=1e-4)
-    gen_optimizer = torch.optim.Adam(gen.parameters(), lr=1e-4)
-    cls_optimizer = torch.optim.Adam(params, lr=1e-4)
+    gen_optimizer = torch.optim.Adam(gen.parameters(), lr=5e-4)
+    q_optimizer = torch.optim.Adam(params, lr=5e-4)
 
-    loss = nn.CrossEntropyLoss()
+    loss = nn.CrossEntropyLoss().to(device)
 
     for epoch in range(epochs):
         for idx, (data, target) in enumerate(data_loader):
             dis_optimizer.zero_grad()
             gen_optimizer.zero_grad()
-            cls_optimizer.zero_grad()
+            q_optimizer.zero_grad()
 
             data = data.to(device)
             target = one_hot(target, 10).to(device)
-            lv = one_hot(torch.IntTensor(np.random.randint(0,10, size=data.size(0))), 10).to(device) # latent variable
-            
+            #lv = one_hot(torch.IntTensor(np.random.randint(0,10, size=data.size(0))), 10).to(device) # latent variable
+
             fake_label = torch.zeros(data.size(0)).to(device).long()
             real_label = torch.ones(data.size(0)).to(device).long()
 
             z = torch.randn((data.size(0), 100)).to(device)
 
-            dis_real, _ = dis(data)
             gen_images = gen(z, target)
-
             g_loss = loss(dis(gen_images)[0], real_label)
+            g_loss.backward()
+            gen_optimizer.step()
 
-            dis_fake, fe_fake = dis(gen_images.detach())
-            
+            dis_real, _ = dis(data)
+            dis_fake, cls_fake = dis(gen_images.detach())
+
             d_real_loss = loss(dis_real, real_label)
             d_fake_loss = loss(dis_fake, fake_label)
 
             d_loss = (d_real_loss + d_fake_loss)/2
-            
-            cls_fake = cls(fe_fake.detach())
-            q_loss = loss(cls_fake, torch.argmax(target,1))
-           
             d_loss.backward()
-            g_loss.backward()
-            q_loss.backward()
-
             dis_optimizer.step()
-            gen_optimizer.step()
-            cls_optimizer.step()
 
+            _, cls_fake = dis(gen_images.detach())
+            q_loss = loss(Variable(cls_fake.detach(), requires_grad=True), torch.argmax(target,1))
+            q_loss.backward()
+            q_optimizer.step()
+            
             if idx%100 == 0:
                 print("Epoch[{}/{}] Loss: {:.3f} {:.3f} {:.3f}".format(epoch+1, epochs, d_loss, g_loss, q_loss))
 
