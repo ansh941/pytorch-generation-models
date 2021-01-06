@@ -2,18 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class Q(nn.Module):
-    def __init(self):
-        self.gen = Generator()
-        self.dis = Discriminator()
-        self.cls = Classifier()
-        
-    def forward(self,x):
-        gen_images = self.gen(x)
-        _, fe = self.dis(gen_images)
-        cls = self.cls(fe)
-        return cls
-
 class Generator(nn.Module):
     def __init__(self):
         super(Generator, self).__init__()
@@ -47,7 +35,7 @@ class Generator(nn.Module):
 class Discriminator(nn.Module):
     def __init__(self):
         super(Discriminator, self).__init__()
-        self.conv1 = nn.Conv2d(11, 32, 5)
+        self.conv1 = nn.Conv2d(1, 32, 5)
         self.conv1_bn = nn.BatchNorm2d(32)
         self.conv2 = nn.Conv2d(32, 64, 5)
         self.conv2_bn = nn.BatchNorm2d(64)
@@ -83,12 +71,12 @@ class Classifier(nn.Module):
         self.cls1_bn = nn.BatchNorm1d(10)
 
     def get_logits(self, x):
-        cls1 = self.cls1(conv3)
+        cls1 = self.cls1(x)
 
         return cls1
     
-    def forward(self, x, y):
+    def forward(self, x):
         logits= self.get_logits(x)
 
-        return cls_logits
+        return logits
 
