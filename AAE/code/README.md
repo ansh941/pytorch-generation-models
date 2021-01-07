@@ -1,5 +1,4 @@
 ## AAE(Adversarial AutoEncoder)
-Incompleted code...
 
 ### English
 AAE is the model that graft GAN onto AutoEncoder.
