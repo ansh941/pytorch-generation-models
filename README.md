@@ -23,7 +23,6 @@ Current CVAE based on DNN.<br>
 So, I should change CVAE to convolutional CVAE.<br>
 
 2. Need New generation models.<br>
-  - AAE<br>
   - WGAN<br>
 
 3. Korean to English<br>
