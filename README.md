@@ -2,6 +2,9 @@
 Generation models using Pytorch.<br>
 I'm going to add new generation models every weekday.<br>
 Starting with the basic models!
+
+2021/10/14
+After InfoGAN, it will be updated in form of notebook(.ipynb).
 <br>
 
 # Environments
