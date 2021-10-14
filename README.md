@@ -18,13 +18,9 @@ python test.py --logdir='temp' --gpu=0 --seed=0
 ```
 ## Next tasks
 
-1. Should add convolution layers in CVAE.<br>
-Current CVAE based on DNN.<br>
-So, I should change CVAE to convolutional CVAE.<br>
+1. Add StyleGAN series<br>
 
 2. Need New generation models.<br>
-  - DANN<br>
-
 3. Korean to English<br>
 
 4. New dataset
