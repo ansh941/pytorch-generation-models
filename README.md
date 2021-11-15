@@ -23,7 +23,7 @@ python test.py --logdir='temp' --gpu=0 --seed=0
 
 1. Add StyleGAN series<br>
 
-2. Need New generation models.<br>
+2. Need New generation models.(like flow based)<br>
 3. Korean to English<br>
 
 4. New dataset
